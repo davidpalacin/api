@@ -21,13 +21,13 @@ const UserSchema = new mongoose.Schema({
   post_ids: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "posts",
     },
   ],
   answer_ids: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Answer",
+      ref: "answers",
     },
   ],
 });

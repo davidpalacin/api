@@ -6,7 +6,7 @@ const isValidToken = require('../middlewares/isValidToken.js');
 
 /* GET users listing. */
 /* Base endpoint -> '/users' */
-router.get('/', isValidToken, UserController.getUsers);
+router.get('/', UserController.getUsers);
 router.get('/:id', UserController.getUserById); // obtener un usuario por id
 router.post('/register', UserController.register); //registrar un usuario
 router.post('/login', UserController.login); //loggear a un usuario
