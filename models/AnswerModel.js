@@ -7,7 +7,13 @@ const AnswerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  likes: {
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
+  ],
+  numLikes: {
     type: Number,
     required: true,
     default: 0,
@@ -21,7 +27,7 @@ const AnswerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "posts",
     required: true,
-  }
+  },
 });
 
 const Answer = mongoose.model("answers", AnswerSchema);
