@@ -1,6 +1,7 @@
 const Post = require("../models/PostModel.js");
 const User = require("../models/UserModel.js");
 const Answer = require("../models/AnswerModel.js");
+const { response } = require("express");
 
 exports.createAnswer = async (req, res) => {
   try {
@@ -38,3 +39,22 @@ exports.createAnswer = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.showAnswers = async(req, res) => {
+
+  try {
+    const postId = req.params.postId;
+  
+    // Encontrar las respuestas solo sobre ese post, usando el id 
+    const answers = await Answer.find({
+      post_id: postId
+    });
+  
+    res.status(200).json({
+      answers
+    });
+    
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}

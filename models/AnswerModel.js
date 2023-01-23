@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const AnswerSchema = new mongoose.Schema({
   author: {
     type: String,
@@ -30,4 +32,6 @@ const AnswerSchema = new mongoose.Schema({
   },
 });
 
-const Answer = mongoose.model("answers", AnswerSchema);
+const AnswerModel = mongoose.model("answers", AnswerSchema);
+module.exports = AnswerModel;
+
