@@ -33,28 +33,61 @@ exports.createAnswer = async (req, res) => {
       message: "La respuesta ha sido creada correctamente",
       newAnswer,
       updatedUser,
-      updatedPost
+      updatedPost,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-exports.showAnswers = async(req, res) => {
-
+exports.showAnswers = async (req, res) => {
   try {
     const postId = req.params.postId;
-  
-    // Encontrar las respuestas solo sobre ese post, usando el id 
+
+    // Encontrar las respuestas solo sobre ese post, usando el id
     const answers = await Answer.find({
-      post_id: postId
+      post_id: postId,
     });
-  
+
     res.status(200).json({
-      answers
+      answers,
     });
-    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
+
+// Patch likes de comentarios
+exports.updateLikes = async (req, res) => {
+  const { action, answerId, userId } = req.params; // miramos qué quiere hacer el usuario
+
+  if (action === "like") {
+    // like el comentario
+    const updatedAnswer = await Answer.findOneAndUpdate(
+      { _id: answerId },
+      { $inc: { numLikes: 1 }, $push: { likes: userId } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Answer was updated successfully",
+      updatedAnswer,
+    });
+  } else if (action === "unlike") {
+    // dislike el comentario
+    const updatedAnswer = await Answer.findOneAndUpdate(
+      { _id: answerId },
+      { $inc: { numLikes: -1 }, $pull: { likes: userId } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Answer was updated successfully",
+      updatedAnswer,
+    });
+  } else {
+    res.status(404).json({
+      error: "An error occurred while updating",
+    });
+  }
+};
