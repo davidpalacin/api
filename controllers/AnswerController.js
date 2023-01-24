@@ -62,17 +62,29 @@ exports.updateLikes = async (req, res) => {
   const { action, answerId, userId } = req.body; // miramos qué quiere hacer el usuario
 
   if (action === "like") {
-    // like el comentario
-    const updatedAnswer = await Answer.findOneAndUpdate(
-      { _id: answerId },
-      { $inc: { numLikes: 1 }, $push: { likes: userId } },
-      { new: true }
-    );
-
-    res.status(200).json({
-      message: "Answer was updated successfully",
-      updatedAnswer,
+    // Necesitamos primero encontrar el comentario con ese id, para ver si el usuario ya le había dado like.
+    const answer = await Answer.findOne({
+      _id: answerId,
+      likes: { $in: [userId] },
     });
+
+
+    if (answer) {
+      res.status(200).json({
+        message: "Ya ha dado like a esta respuesta",
+      });
+    } else {
+      const updatedAnswer = await Answer.findOneAndUpdate(
+        { _id: answerId },
+        { $inc: { numLikes: 1 }, $push: { likes: userId } },
+        { new: true }
+      );
+      res.status(200).json({
+        message: "Answer was updated successfully",
+        updatedAnswer,
+      });
+    }
+    
   } else if (action === "unlike") {
     // dislike el comentario
     const updatedAnswer = await Answer.findOneAndUpdate(
