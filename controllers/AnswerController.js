@@ -59,7 +59,7 @@ exports.showAnswers = async (req, res) => {
 
 // Patch likes de comentarios
 exports.updateLikes = async (req, res) => {
-  const { action, answerId, userId } = req.params; // miramos qué quiere hacer el usuario
+  const { action, answerId, userId } = req.body; // miramos qué quiere hacer el usuario
 
   if (action === "like") {
     // like el comentario
