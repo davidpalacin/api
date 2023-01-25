@@ -88,7 +88,7 @@ exports.updateLikes = async (req, res) => {
         { new: true }
       );
       res.status(200).json({
-        message: "Post ikes was updated successfully",
+        message: "Post likes was updated successfully",
         updatedPost,
       });
     }

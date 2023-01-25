@@ -101,3 +101,33 @@ exports.updateLikes = async (req, res) => {
     });
   }
 };
+
+// Delete a comment
+exports.deleteAnswer = async (req, res) => {
+  try {
+    const answerId = req.params.id;
+    // Delete the answer
+    const deletedAnswer = await Answer.findOneAndDelete({ _id: answerId });
+
+    //Delete the answer id from the array in Posts
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: deletedAnswer.post_id },
+      { $pull: { answer_ids: deletedAnswer._id } },
+      { new: true }
+    );
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: deletedAnswer.user_id },
+      { $pull: { answer_ids: deletedAnswer._id } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: `El comentario ${deletedAnswer._id} ha sido eliminado`,
+      updatedPost,
+      updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ message: err.message });
+  }
+};
