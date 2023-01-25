@@ -15,11 +15,6 @@ const AnswerSchema = new mongoose.Schema({
       ref: "users",
     },
   ],
-  numLikes: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",

@@ -13,11 +13,12 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  likes: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
+  ],
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",

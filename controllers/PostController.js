@@ -66,3 +66,47 @@ exports.deletePost = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateLikes = async (req, res) => {
+  const { action, postId, userId } = req.body; // miramos qué quiere hacer el usuario
+
+  if (action === "like") {
+    // Necesitamos primero encontrar el comentario con ese id, para ver si el usuario ya le había dado like.
+    const isAlreadyLiked = await Post.findOne({
+      _id: postId,
+      likes: { $in: [userId] },
+    });
+
+    if (isAlreadyLiked) {
+      res.status(200).json({
+        message: "Ya ha dado like a esta respuesta",
+      });
+    } else {
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $push: { likes: userId } },
+        { new: true }
+      );
+      res.status(200).json({
+        message: "Post ikes was updated successfully",
+        updatedPost,
+      });
+    }
+  } else if (action === "unlike") {
+    // quitar like del comentario
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId },
+      { $pull: { likes: userId } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Post was updated successfully",
+      updatedPost,
+    });
+  } else {
+    res.status(404).json({
+      error: "An error occurred while updating",
+    });
+  }
+};
