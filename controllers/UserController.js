@@ -70,6 +70,7 @@ exports.login = async (req, res) => {
   }
 };
 
+// recibir todos los usuarios
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find({});
@@ -81,6 +82,7 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+// recibir un usuario:
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -107,7 +109,7 @@ exports.updateUser = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Error updating user", error: err.message });
+      .json({ message: "Internal server error.", error: err.message });
   }
 };
 
@@ -121,6 +123,32 @@ exports.deleteUser = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Error deleting user", error: err.message });
+      .json({ message: "Internal server error: ", error: err.message });
+  }
+};
+
+// Seguir a un usuario:
+exports.followUser = async (req, res) => {
+  const { userId, followId } = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { $push: { following: followId } },
+      { new: true }
+    );
+    const followedUser = await User.findOneAndUpdate(
+      { _id: followId },
+      { $push: { followers: userId } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "User followed successfully",
+      user,
+      followedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 };

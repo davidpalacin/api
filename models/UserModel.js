@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    default: 'user'
+    default: "user",
   },
   post_ids: [
     {
@@ -28,6 +28,18 @@ const UserSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "answers",
+    },
+  ],
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
     },
   ],
 });
