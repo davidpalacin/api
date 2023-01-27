@@ -5,10 +5,11 @@ const { response } = require("express");
 
 exports.createAnswer = async (req, res) => {
   try {
-    const { author, content, post_id, user_id } = req.body;
+    const { content, post_id, user_id } = req.body;
+    const author = await User.findOne({ _id: user_id }, { new: true }).select('username');
 
     const newAnswer = new Answer({
-      author,
+      author: author.username,
       content,
       post_id,
       user_id,
@@ -133,7 +134,7 @@ exports.deleteAnswer = async (req, res) => {
 };
 
 //Edit a comment
-exports.editComment = async (req, res) => {
+exports.editAnswer = async (req, res) => {
   // Recogemos los datos necesarios
   const { newContent, answerId } = req.body;
   // encontramos y actualizamos el comentario
