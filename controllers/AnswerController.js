@@ -131,3 +131,30 @@ exports.deleteAnswer = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+//Edit a comment
+exports.editComment = async (req, res) => {
+  // Recogemos los datos necesarios
+  const { newContent, answerId } = req.body;
+  // encontramos y actualizamos el comentario
+  const answerEdit = await Answer.findOneAndUpdate(
+    { _id: answerId },
+    {
+      $set: { content: newContent },
+    },
+    { new: true }
+  );
+  // Si no se ha editado ninguno, no se encuentra el comentario:
+  if (!answerEdit) {
+    res.status(404).json({
+      success: false,
+      message: "Comment not found",
+    });
+  }
+  // Cuando se haya editado enviar respuesta satisfactoria:
+  res.status(200).json({
+    success: true,
+    message: "comment updated successfully",
+    answerEdit,
+  });
+};

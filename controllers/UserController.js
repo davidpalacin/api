@@ -152,3 +152,29 @@ exports.followUser = async (req, res) => {
     res.status(500).json({ error });
   }
 };
+
+// Dejar de seguir:
+exports.unfollowUser = async (req, res) => {
+  const { userId, unfollowId } = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { following: unfollowId } },
+      { new: true }
+    );
+    const unfollowedUser = await User.findOneAndUpdate(
+      { _id: unfollowId },
+      { $pull: { followers: userId } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "User unfollowed successfully",
+      user,
+      unfollowedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
